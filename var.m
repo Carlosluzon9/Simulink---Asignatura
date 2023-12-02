@@ -77,7 +77,7 @@ GQ2T1cr = tf(kcr2, [Taucr2 1]);
 
 %Diseño PI cancelacion de polos
 %Especificaciones
-Tau_cl=1.2*Taucr1;
+Tau_cl=0.8*Taucr1;
 %Calculo
 Ti_cp=Taucr1;
 K_cp=Taucr1/(kcr1*Tau_cl);
@@ -86,8 +86,8 @@ Tt_cp=sqrt(Ti_cp);
 
 %Diseno PI asignacion de polos + Filtro referencia
 %Especificaciones
-OS=15;
-tp=100;
+OS=10;
+tp=200;
 delta=sqrt((log(OS/100)^2)/((pi)^2 + log(OS/100)^2));
 wn=(pi)/(tp*sqrt(1-delta^2));
 K_ap=(2*delta*Taucr1*wn-1)/kcr1;
@@ -103,9 +103,13 @@ C_ff= GQ2T1cr/GQ1T1cr;
 %haciendo uso de la funcion pidTuner(GQ1T1, 'pidf') obtenemos un PID con
 %tiempo de respuesta de 20s en la variable PID_Matlab
 
+%Ziegler-Nichols
 
+K_zn=0.9*Taucr1/(kcr1*5*Taucr1);
+Ti_zn=3*5*Taucr1;
+Tt_zn=sqrt(Ti_zn);
 
 function F = root2d(x,Q1,Q2,Hf1,U,A,ep,sig,TA)
 F(1) = U*A * (TA + x(2) - 2*x(1)) + ep*sig*A * (TA^4 + x(2)^4 - 2*x(1)^4) + Hf1*Q1;
-F(2) = U*A * (TA + x(1) - 2*x(2)) + ep*sig*A * (TA^4 + x(1)^4 - 2*x(2)^4) + Hf1*Q2;
+F(2) = U*A * (TA + x(1) - 2*x(2)) + ep*sig*A * (TA^4 + x(1)^4 - 2*x(2)^4) + 0.004*Q2;
 end
